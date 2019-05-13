@@ -4,9 +4,10 @@ This repository contains the original source codes used for ECCV2018 publication
 
 ### External libraries
 Requirements: 
- - Gflags, Eigen, Blas and Lapack, Ceres, Cuda
+ - Gflags, Eigen, Blas and Lapack, Ceres
+ 
 Optional:
- - Glog, Matlab, SuiteSparse
+ - Matlab
 
 ### Installation 
 How to build on Windows:
