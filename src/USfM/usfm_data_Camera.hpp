@@ -30,7 +30,9 @@ namespace usfm {
 		eOpenCvFisheye = 9,
 		eOpenCFull = 10,
 		eFOV = 11,
-		eThinPrismFisheye = 12
+		eThinPrismFisheye = 12,
+		eDivision1 = 13,
+		eDivision2 = 14
 	};
 
 	enum ECameraParameter {

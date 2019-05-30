@@ -25,15 +25,22 @@ namespace usfm {
 			const std::string cov_model = mxToStr(mxGetField(settings, 0, std::string("in_cov").c_str()));
 			const double *run_opt = mxGetPr(mxGetField(settings, 0, std::string("run_opt").c_str()));
 			mxArray *opt_radial = mxGetField(settings, 0, std::string("run_opt_radial").c_str());
+			mxArray *opt_robust_lost = mxGetField(settings, 0, std::string("robust_lost").c_str());
 
 			scene._settings._alg = EAlgorithm_stringToEnum(alg);
 			scene.setInputCovarianceEstimator(cov_model);
 			scene._settings._run_opt = (run_opt[0] == 0 ? false : true);
-			if (opt_radial != NULL) {		// find the radial distortion parameters and fix the rest
+			
+			if (opt_radial != NULL) {			// find the radial distortion parameters and fix the rest
 				const double *run_opt_radial = mxGetPr(opt_radial);
 				scene._settings._run_opt_radial = (run_opt_radial[0] == 0 ? false : true);
 			}
 
+			if (opt_robust_lost != NULL) {		// process the optimization with robust lost function
+				const double *run_robust_lost = mxGetPr(opt_robust_lost);
+				scene._settings._robust_lost = (run_robust_lost[0] == 0 ? false : true);
+			}
+			
 		}
 		catch (const std::runtime_error& e) {
 			std::cerr << "Faild to load settings from Matlab: " << e.what();

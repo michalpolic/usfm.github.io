@@ -68,6 +68,8 @@ namespace usfm {
 		for (std::shared_ptr<Projection> proj : scene._projections) {
 			ceres::CostFunction* cost_f = proj->getCostFunction();
 			ceres::LossFunction* loss_f = NULL;
+			if (scene._settings._robust_lost)
+				ceres::LossFunction* loss_f = new ceres::CauchyLoss(1.0);
 			problem->AddResidualBlock(cost_f, loss_f, 
 				proj->_X->_X, proj->_camera->_parameters.data(), proj->_image->_parameters.data());
 		}
@@ -100,7 +102,11 @@ namespace usfm {
 		double cost = 0.0;
 		ceres::Problem::EvaluateOptions evalOpt;
 		evalOpt.parameter_blocks = parameter_blocks;
-		evalOpt.apply_loss_function = false;
+		if (scene._settings._robust_lost)
+			evalOpt.apply_loss_function = true;
+		else 
+			evalOpt.apply_loss_function = false;
+
 
 		// optimize - we assume the problem close to optimal solution
 		if (scene._settings._run_opt){

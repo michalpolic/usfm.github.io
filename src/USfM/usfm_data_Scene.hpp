@@ -63,6 +63,7 @@ namespace usfm {
 		EPoint2DCovariance _e_in_cov = eVarianceFactor;
 		bool _run_opt = true;			// run the CERES optimization
 		bool _run_opt_radial = false;   // run the CERES optimization on radial coeff. only
+		bool _robust_lost = false;
 	};
 
 
