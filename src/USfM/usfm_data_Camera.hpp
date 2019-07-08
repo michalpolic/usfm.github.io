@@ -32,7 +32,11 @@ namespace usfm {
 		eFOV = 11,
 		eThinPrismFisheye = 12,
 		eDivision1 = 13,
-		eDivision2 = 14
+		eDivision2 = 14,
+		eDivision3 = 15,
+		eDivision4 = 16,
+    eInverseDivision1 = 17,
+    eInverseDivision2 = 18
 	};
 
 	enum ECameraParameter {

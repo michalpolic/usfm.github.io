@@ -176,6 +176,14 @@ namespace usfm {
 			return eDivision1;
 		if (colmap_model == "DIVISION2")
 			return eDivision2;
+		if (colmap_model == "DIVISION3")
+			return eDivision3;
+		if (colmap_model == "DIVISION4")
+			return eDivision4;
+    if (colmap_model == "I_DIVISION1")
+      return eInverseDivision1;
+    if (colmap_model == "I_DIVISION2")
+      return eInverseDivision2;
 		if (colmap_model == "SIMPLE_RADIAL_FISHEYE")
 			return eRadial1Fisheye;
 		if (colmap_model == "RADIAL_FISHEYE")
@@ -210,6 +218,14 @@ namespace usfm {
 			return std::string("DIVISION1");
 		if (colmap_model == eDivision2)
 			return std::string("DIVISION2");
+		if (colmap_model == eDivision3)
+			return std::string("DIVISION3");
+		if (colmap_model == eDivision4)
+			return std::string("DIVISION4");
+    if (colmap_model == eInverseDivision1)
+      return std::string("I_DIVISION1");
+    if (colmap_model == eInverseDivision2)
+      return std::string("I_DIVISION2");
 		if (colmap_model == eRadial1Fisheye)
 			return std::string("SIMPLE_RADIAL_FISHEYE");
 		if (colmap_model == eRadial2Fisheye)

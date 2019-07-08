@@ -26,6 +26,7 @@ namespace usfm {
 			const double *run_opt = mxGetPr(mxGetField(settings, 0, std::string("run_opt").c_str()));
 			mxArray *opt_radial = mxGetField(settings, 0, std::string("run_opt_radial").c_str());
 			mxArray *opt_robust_lost = mxGetField(settings, 0, std::string("robust_lost").c_str());
+      mxArray *opt_nullspace_computation = mxGetField(settings, 0, std::string("return_nullspace").c_str());
 
 			scene._settings._alg = EAlgorithm_stringToEnum(alg);
 			scene.setInputCovarianceEstimator(cov_model);
@@ -40,6 +41,11 @@ namespace usfm {
 				const double *run_robust_lost = mxGetPr(opt_robust_lost);
 				scene._settings._robust_lost = (run_robust_lost[0] == 0 ? false : true);
 			}
+
+      if (opt_nullspace_computation != NULL) {		// return nullspace as additional output
+        const double *run_nullspace_computation = mxGetPr(opt_nullspace_computation);
+        scene._settings._return_nullspace = (run_nullspace_computation[0] == 0 ? false : true);
+      }
 			
 		}
 		catch (const std::runtime_error& e) {

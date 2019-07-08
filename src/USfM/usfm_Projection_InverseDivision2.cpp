@@ -4,26 +4,27 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 /*
-* File:   usfm_Projection_InverseDivision2.cpp
+* File:   usfm_Projection_Division2.cpp
 * Author: Michal Polic, michal.polic(at)cvut.cz
 */
 
-#include "USfM/usfm_Projection_Division2.hpp"
+#include "USfM/usfm_Projection_InverseDivision2.hpp"
+#include "ceres/jet.h"
 
 namespace usfm {
 
-	ProjectionDivision2::ProjectionDivision2() {}
-	ProjectionDivision2::ProjectionDivision2(Image* image) {
+	ProjectionInverseDivision2::ProjectionInverseDivision2() {}
+	ProjectionInverseDivision2::ProjectionInverseDivision2(Image* image) {
 		_image = image;
 	};
-	ProjectionDivision2::ProjectionDivision2(Camera* camera) {
+	ProjectionInverseDivision2::ProjectionInverseDivision2(Camera* camera) {
 		_camera = camera;
 	};
-	ProjectionDivision2::ProjectionDivision2(Camera* camera, Image* image) {
+	ProjectionInverseDivision2::ProjectionInverseDivision2(Camera* camera, Image* image) {
 		_camera = camera;
 		_image = image;
 	}
-	ProjectionDivision2::ProjectionDivision2(Camera* camera, Image* image, Point3D* X, Point2D* obs) {
+	ProjectionInverseDivision2::ProjectionInverseDivision2(Camera* camera, Image* image, Point3D* X, Point2D* obs) {
 		_camera = camera;
 		_image = image;
 		_X = X;
@@ -33,7 +34,7 @@ namespace usfm {
 
 	// assume the correct order of parameters array 
 	// assign the pointers (allows the change of projection function)
-	void ProjectionDivision2::initOffsets(Camera* cam) {
+	void ProjectionInverseDivision2::initOffsets(Camera* cam) {
 		cam->_offset_in_parameters[e_img_width] = 0;
 		cam->_offset_in_parameters[e_img_height] = 1;
 		cam->_offset_in_parameters[e_f] = 2;
@@ -44,7 +45,7 @@ namespace usfm {
 	}
 
 	// sort the parameters array (allows the change of projection function)
-	void ProjectionDivision2::reorderParams(Camera* cam) {
+	void ProjectionInverseDivision2::reorderParams(Camera* cam) {
 		if (!cam)
 			throw std::runtime_error("The input camera is not initialized.");
 
@@ -56,7 +57,7 @@ namespace usfm {
 	}
 
 	// init pointers to images
-	void ProjectionDivision2::initOffsets(Image* img) {
+	void ProjectionInverseDivision2::initOffsets(Image* img) {
 		img->_offset_in_parameters[e_aa] = 0;
 		img->_offset_in_parameters[e_C] = 3;
 		img->_offset_in_parameters[e_q] = 6;
@@ -65,7 +66,7 @@ namespace usfm {
 	}
 
 	// sort the parameters array
-	void ProjectionDivision2::reorderParams(Image* img) {
+	void ProjectionInverseDivision2::reorderParams(Image* img) {
 		std::vector<double> sorted_params;
 		sorted_params.resize(22);
 		for (int i = 0; i < 3; ++i)
@@ -87,29 +88,46 @@ namespace usfm {
 	}
 
 	// ceres function for deriving the derivation
-	ceres::CostFunction* ProjectionDivision2::getCostFunction() {
-		return (new ceres::AutoDiffCostFunction<ProjectionDivision2,
+	ceres::CostFunction* ProjectionInverseDivision2::getCostFunction() {
+		return (new ceres::AutoDiffCostFunction<ProjectionInverseDivision2,
 			2,												// output residuals
 			3,												// input 3D point	
-			ProjectionDivision2::N_CAM_PARAMS,			// camera parameters
-			ProjectionDivision2::N_IMG_PARAMS>(new ProjectionDivision2(_camera, _image, _X, _obs)));	// image parameters
+			ProjectionInverseDivision2::N_CAM_PARAMS,			// camera parameters
+			ProjectionInverseDivision2::N_IMG_PARAMS>(new ProjectionInverseDivision2(_camera, _image, _X, _obs)));	// image parameters
 	}
 
 	// compute the residual of related 3D point projection and measured observation
-	void ProjectionDivision2::computeResidual(double * res) {
+	void ProjectionInverseDivision2::computeResidual(double * res) {
 		if (_camera == NULL || _image == NULL || _obs == NULL || _X == NULL)
 			throw std::runtime_error("To compute residual function, the pointers _camera, _image, _obs, _X must be known.");
-		if (!(*this)(_X->_X, _camera->_parameters.data(), _image->_parameters.data(), res))
-			throw std::runtime_error("The computation of the residual error failed.");
+
+    // test in complex numbers 
+    ceres::Jet<double, 1> X[3];
+    for (int i = 0; i < 3; i++)
+      X[i] = ceres::Jet<double, 1>(_X->_X[i]);
+    ceres::Jet<double, 1> params[N_CAM_PARAMS];
+    for (int i = 0; i < N_CAM_PARAMS; i++)
+      params[i] = ceres::Jet<double, 1>(_camera->_parameters.data()[i]);
+    ceres::Jet<double, 1> img_params[N_IMG_PARAMS];
+    for (int i = 0; i < N_IMG_PARAMS; i++)
+      img_params[i] = ceres::Jet<double, 1>(_image->_parameters.data()[i]);
+    ceres::Jet<double, 1> results[2];
+
+
+    if (!(*this)(X, params, img_params, results))
+      throw std::runtime_error("The computation of the residual error failed.");
+
+		/*if (!(*this)(_X->_X, _camera->_parameters.data(), _image->_parameters.data(), res))
+			throw std::runtime_error("The computation of the residual error failed.");*/
 	}
 
 	// number of used camera parameters for specified image model
-	int ProjectionDivision2::numCamParams() {
-		return ProjectionDivision2::N_CAM_PARAMS;
+	int ProjectionInverseDivision2::numCamParams() {
+		return ProjectionInverseDivision2::N_CAM_PARAMS;
 	}
 
 	// number of used image parameters for specified image model
-	int ProjectionDivision2::numImgParams() {
-		return ProjectionDivision2::N_IMG_PARAMS;
+	int ProjectionInverseDivision2::numImgParams() {
+		return ProjectionInverseDivision2::N_IMG_PARAMS;
 	}
 }

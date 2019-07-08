@@ -19,6 +19,10 @@
 #include "USfM/usfm_Projection_Radial4.hpp"
 #include "USfM/usfm_Projection_Division1.hpp"
 #include "USfM/usfm_Projection_Division2.hpp"
+#include "USfM/usfm_Projection_Division3.hpp"
+#include "USfM/usfm_Projection_Division4.hpp"
+#include "USfM/usfm_Projection_InverseDivision1.hpp"
+#include "USfM/usfm_Projection_InverseDivision2.hpp"
 #include "USfM/usfm_Projection_OpenCV.hpp"
 #include "USfM/usfm_Projection_OpenCV_Fisheye.hpp"
 #include "USfM/usfm_Projection_OpenCV_Full.hpp"
@@ -73,6 +77,18 @@ namespace usfm {
 		if (camModel == eDivision2 && imgModel == eAAC)
 			return std::make_shared<ProjectionDivision2>(camera, image, X, obs);
 		
+		if (camModel == eDivision3 && imgModel == eAAC)
+			return std::make_shared<ProjectionDivision3>(camera, image, X, obs);
+
+		if (camModel == eDivision4 && imgModel == eAAC)
+			return std::make_shared<ProjectionDivision4>(camera, image, X, obs);
+    
+    if (camModel == eInverseDivision1 && imgModel == eAAC)
+      return std::make_shared<ProjectionInverseDivision1>(camera, image, X, obs);
+    
+    if (camModel == eInverseDivision2 && imgModel == eAAC)
+      return std::make_shared<ProjectionInverseDivision2>(camera, image, X, obs);
+
 		if (camModel == eOpenCv && imgModel == eAAC)
 			return std::make_shared<ProjectionOpenCV>(camera, image, X, obs);
 

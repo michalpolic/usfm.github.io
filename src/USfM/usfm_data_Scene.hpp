@@ -64,6 +64,7 @@ namespace usfm {
 		bool _run_opt = true;			// run the CERES optimization
 		bool _run_opt_radial = false;   // run the CERES optimization on radial coeff. only
 		bool _robust_lost = false;
+    bool _return_nullspace = false;
 	};
 
 
