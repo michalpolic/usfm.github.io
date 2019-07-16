@@ -34,7 +34,11 @@ namespace usfm {
 		case eCOLMAP:
 			return std::make_shared<IO_Colmap>();
 		case eMATLAB:
-			return std::make_shared<IO_Matlab>();
+			#ifdef USE_MATLAB
+				return std::make_shared<IO_Matlab>();
+			#else
+				throw std::runtime_error(std::string("Matlab is disabled. Recompile the project with: USfM_BUILD_MEX = ON"));
+			#endif
 		case eAliceVision:
 			throw std::runtime_error(std::string("AliceVision input class is not implemented."));
 		default:

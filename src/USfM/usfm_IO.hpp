@@ -15,7 +15,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "mex.h"
+#ifdef USE_MATLAB
+  #include "mex.h"
+#endif
 #include "USfM/usfm_data_Scene.hpp"
 #include "USfM/usfm_Statistics.hpp"
 

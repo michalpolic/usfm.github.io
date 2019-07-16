@@ -19,9 +19,9 @@ namespace usfm {
 		init(scene);
 		//std::cout.precision(17);
 
-    //// test of the reprojection error for I_DIVISON2 model
-    //double res[2];
-    //scene._projections[0]->computeResidual(res);
+		// test of the reprojection error for I_DIVISON2 model
+		//double res[2];
+		//scene._projections[0]->computeResidual(res); 
 
 		// find radial distortion parameters
 		if (scene._settings._run_opt_radial)

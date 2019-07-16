@@ -15,7 +15,9 @@
 #include "USfM/usfm_Statistics.hpp"
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
-#include "mex.h"
+#ifdef USE_MATLAB
+  #include "mex.h"
+#endif
 
 typedef Eigen::SparseMatrix<double, Eigen::ColMajor> SM;
 typedef Eigen::SparseMatrix<double, Eigen::RowMajor> SM_row;

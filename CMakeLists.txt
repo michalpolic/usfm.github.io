@@ -18,7 +18,7 @@ option(USfM_BUILD_MEX "Build MEX (require Matlab)" OFF)
 option(USfM_BUILD_TESTS "Build unit tests" OFF)
 option(USfM_MKL_SUPPORT "Build with MKL" OFF)
 
-
+MESSAGE("OpenBLAS_DIR: ${OpenBLAS_DIR}") 
 
 # -----------------------------------------------------------------------------
 # SYSTEM LIBRARY - FOR LINUX
@@ -47,6 +47,7 @@ if(DEFINED gflags_VERSION_STRING OR DEFINED GFLAGS_VERSION_STRING)
   message( STATUS "> GFLAGS_LIBRARIES:   ${GFLAGS_LIBRARIES}" )
 endif()
 
+
 # -----------------------------------------------------------------------------
 # EIGEN
 # -----------------------------------------------------------------------------
@@ -57,15 +58,6 @@ if(Eigen3_FOUND)
   set(EIGEN_FLAGS "-DEIGEN_DONT_ALIGN_STATICALLY=1 -DEIGEN_DONT_VECTORIZE=1")
 endif()
 
-# -----------------------------------------------------------------------------
-# BLAS and LAPACK
-# -----------------------------------------------------------------------------
-find_package(LAPACK REQUIRED)
-if(LAPACK_FOUND)
-  message( "Found LAPACK" )
-  message( STATUS "> LAPACK_INCLUDE_DIRS:   ${LAPACK_INCLUDE_DIRS}" )
-  message( STATUS "> LAPACK_LIBRARIES:   ${LAPACK_LIBRARIES}" )
-endif()
 
 ## -----------------------------------------------------------------------------
 ## IntelMKL -> BLAS & LAPACK
@@ -73,6 +65,7 @@ endif()
 if(USfM_MKL_SUPPORT)
 	find_package(MKL QUIET)
   if(MKL_FOUND)
+	add_definitions(-DUSE_MKL)
     message( "Found Intel MKL" )
     message( STATUS "> MKL_INCLUDE_DIR: ${MKL_INCLUDE_DIR}"   )
     message( STATUS "> MKL_LIBRARIES: ${MKL_LIBRARIES}" )
@@ -83,26 +76,40 @@ if(USfM_MKL_SUPPORT)
   endif()
 endif()
 
+
+# -----------------------------------------------------------------------------
+# BLAS and LAPACK
+# -----------------------------------------------------------------------------
+#find_package(LAPACK REQUIRED)
+#if(LAPACK_FOUND)
+#  add_definitions(-DUSE_LAPACK)
+#  message( "Found LAPACK" )
+#  message( STATUS "> LAPACK_INCLUDE_DIRS: 0.3.6  ${LAPACK_INCLUDE_DIRS}" )
+#  message( STATUS "> LAPACK_LIBRARIES:   ${LAPACK_LIBRARIES}" )
+#endif()
+
+
 ## -----------------------------------------------------------------------------
 ## LAPACK AND BLAS LIBS
 ## -----------------------------------------------------------------------------
-#if(NOT UNC_MKL_SUPPORT AND UNIX)
-#  find_package(LAPACK REQUIRED)
-#  if(LAPACK_FOUND)
-#    message("Found lapack and blas: ${LAPACK_LIBRARIES}")
-#  endif()
-#endif()
+if(NOT UNC_MKL_SUPPORT AND UNIX)
+  find_package(LAPACK REQUIRED)
+  if(LAPACK_FOUND)
+	add_definitions(-DUSE_MKL)
+    message("Found lapack and blas: ${LAPACK_LIBRARIES}")
+  endif()
+endif()
 
 
 # -----------------------------------------------------------------------------
 # SuiteSparse 
 # -----------------------------------------------------------------------------
-find_package(SuiteSparse REQUIRED)
-if(SuiteSparse_FOUND)
-  message( "Found SuiteSparse" )
-  message( STATUS "> SUITESPARSE_INCLUDE_DIRS:   ${SUITESPARSE_INCLUDE_DIRS}" )
-  message( STATUS "> SUITESPARSE_LIBRARIES:   ${SUITESPARSE_LIBRARIES}" )
-endif()
+#find_package(SuiteSparse REQUIRED)
+#if(SuiteSparse_FOUND)
+#  message( "Found SuiteSparse" )
+#  message( STATUS "> SUITESPARSE_INCLUDE_DIRS:   ${SUITESPARSE_INCLUDE_DIRS} ${SuiteSparse_INCLUDE_DIRS}" )
+#  message( STATUS "> SUITESPARSE_LIBRARIES:   ${SUITESPARSE_LIBRARIES} ${SuiteSparse_LIBRARIES}" )
+#endif()
 
 # -----------------------------------------------------------------------------
 # CERES
@@ -124,7 +131,8 @@ if(USfM_BUILD_MEX)
     message("Found Matlab libraries")
     message(STATUS "Matlab_INCLUDE_DIRS: ${Matlab_INCLUDE_DIRS}")
     set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Matlab_INCLUDE_DIRS})
-	get_filename_component(MATLAB_LIBS_ROOT ${Matlab_LIBRARIES} DIRECTORY)  # ${Matlab_LIBRARIES} doesn't contain all required libs
+	LIST(GET Matlab_LIBRARIES 1 Matlab_LIB)
+	get_filename_component(MATLAB_LIBS_ROOT ${Matlab_LIB} DIRECTORY)  # ${Matlab_LIBRARIES} doesn't contain all required libs
     if(UNIX)
       set(Matlab_LIBRARIES ${Matlab_LIBRARIES}
 				"${MATLAB_LIBS_ROOT}/libmx.so"

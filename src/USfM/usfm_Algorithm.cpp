@@ -12,7 +12,14 @@
 #include "USfM/usfm_Projection.hpp"
 #include "USfM/usfm_Projection_Factory.hpp"
 #include <thread>
-#include "mkl.h"
+#ifdef USE_MKL
+	#include "mkl.h"
+#endif 
+//#ifdef USE_LAPACK
+//	#include "openblas/cblas.h"
+//	#include "f2c.h" 
+//	#include "clapack.h"
+//#endif
 
 #include <cmath>
 
@@ -129,7 +136,7 @@ namespace usfm {
 	// Return default optimization options
 	ceres::Solver::Options Algorithm::defaultOprimizationOptions() const {
 		ceres::Solver::Options options;
-		options.linear_solver_type = ceres::SPARSE_NORMAL_CHOLESKY;	//DENSE_SCHUR;
+		options.linear_solver_type = ceres::SPARSE_NORMAL_CHOLESKY; // DENSE_SCHUR;	//DENSE_SCHUR;
 		options.minimizer_progress_to_stdout = false;
 		options.max_num_iterations = 100;
 		return options;
@@ -398,15 +405,42 @@ namespace usfm {
 
 	// invert the square fullrank matrix A by LU decomposition
 	void Algorithm::inversion(DM &A) {
-		// LU
-		MKL_INT N = A.rows();
-		MKL_INT *ipiv = (MKL_INT*) malloc(N * sizeof(MKL_INT));
-		if (LAPACKE_dgetrf(LAPACK_COL_MAJOR, N, N, A.data(), N, ipiv) != 0)
-			std::cerr << "LU decomposition error.";
-		// inverse
-		if (LAPACKE_dgetri(LAPACK_COL_MAJOR, N, A.data(), N, ipiv) != 0)
-			std::cerr << "Lapack inverse error.";
-		free(ipiv);
+    #ifdef USE_MKL
+      // LU
+		  MKL_INT N = A.rows();
+		  MKL_INT *ipiv = (MKL_INT*) malloc(N * sizeof(MKL_INT));
+		  if (LAPACKE_dgetrf(LAPACK_COL_MAJOR, N, N, A.data(), N, ipiv) != 0)
+			  std::cerr << "LU decomposition error.";
+		  // inverse
+		  if (LAPACKE_dgetri(LAPACK_COL_MAJOR, N, A.data(), N, ipiv) != 0)
+			  std::cerr << "Lapack inverse error.";
+		  free(ipiv);
+    #else
+  //    #ifdef USE_LAPACK    
+		//integer info = 0;
+		//integer N = A.rows();
+		//integer *ipiv = (integer*)malloc(N * sizeof(integer));
+  //      // LU
+		//dgetrf_(&N, &N, A.data(), &N, ipiv, &info);
+  //      if (info != 0)
+  //        std::cerr << "LU decomposition error.";
+  //      // inverse
+  //      double workdim = 0;
+		//integer lwork = -1;
+  //      dgetri_(&N, A.data(), &N, ipiv, &workdim, &lwork, &info);
+  //      if (info != 0)
+  //        std::cerr << "Lapack size of work array error.";
+  //      lwork = (integer) workdim;
+  //      double *work = (double*)malloc(workdim * sizeof(double));
+  //      dgetri_(&N, A.data(), &N, ipiv, work, &lwork, &info);
+  //      if (info != 0)
+  //        std::cerr << "Lapack size of work array error.";
+  //      free(ipiv);
+  //    #else
+        // Eigen
+        A = A.inverse();
+  // #endif
+    #endif
 	}
 
 
