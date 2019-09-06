@@ -26,7 +26,10 @@ typedef Eigen::Triplet<double> Tri;
 
 
 namespace usfm {
-	
+
+	inline bool point2DComparator(Point2D first, Point2D second);
+	void SceneFiltering(Scene &scene);
+
 	class Algorithm {
 	public:
 		virtual void compute(Scene& scene, Statistic& statistic) = 0;

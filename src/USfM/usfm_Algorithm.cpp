@@ -24,9 +24,81 @@
 #include <cmath>
 
 namespace usfm {
+	
+	inline bool point2DComparator(Point2D first, Point2D second) { return ((first._xy[0] - second._xy[0] < 0.01) ? (first._xy[1] < second._xy[1]) : (first._xy[0] < second._xy[0])); }
+	
+	void SceneFiltering(Scene &scene) {
+
+		//creating point3D usage map <id, number_of_uses>
+		std::map<int, int> point3D_usage_global;
+		for (auto& p3d : scene._points3D) {
+			point3D_usage_global.emplace(p3d.first, 0);
+		}
+
+		//first filtering cycle - recognizition of unvalid 3D points, afterwards deletenig 2Dpoints corresponding to them
+		for (auto& image : scene._images) {
+			std::map<int, short> point3D_rarity;   //could use different type, because of unused value here, bud map has easily accessible "contains" function
+			for (int i = 0; i < image.second._point2D.size(); ++i) {
+				if (!(scene._points3D.count(image.second._point2D[i]._id_point3D))) {
+					//image.second._point2D[i]._id_point3D = -1;				//unnecessary action, I suppose
+					image.second._point2D.erase(image.second._point2D.begin() + i);
+				}
+				if (!point3D_rarity.count(image.second._point2D[i]._id_point3D)) {
+					point3D_usage_global[image.second._point2D[i]._id_point3D] += 1;
+					point3D_rarity.emplace(image.second._point2D[i]._id_point3D, 0);
+				}
+				else {
+					//image.second._point2D[i]._id_point3D = -1;				//unnecessary action, I suppose
+					image.second._point2D.erase(image.second._point2D.begin() + i);
+				}
+			}
+
+		}
+		
+		//second filtering cycle -- recognizing and multiple observations and afterwards deleting them based on number of uses of referred 3Dpoint
+		//after deleting follows reducing the usage number 
+		for (auto& image : scene._images) {
+			std::sort(image.second._point2D.begin(), image.second._point2D.end(), point2DComparator);
+
+			for (int i = 0; i < (image.second._point2D.size() - 1); ++i) {
+				if (((image.second._point2D[i]._xy[0] - image.second._point2D[i + 1]._xy[0]) < 0.01) && ((image.second._point2D[i]._xy[1] - image.second._point2D[i + 1]._xy[1]) < 0.01)) {
+					if (point3D_usage_global[image.second._point2D[i]._id_point3D] < point3D_usage_global[image.second._point2D[i + 1]._id_point3D]) {
+						point3D_usage_global[image.second._point2D[i]._id_point3D] -= 1;
+						image.second._point2D.erase(image.second._point2D.begin() + i);
+					}
+					else {
+						point3D_usage_global[image.second._point2D[i + 1]._id_point3D] -= 1;
+						image.second._point2D.erase(image.second._point2D.begin() + i + 1);
+					}
+				}
+			}
+		}
+
+		//third filtering cycle - deleting of 3D points used less than two times
+
+		for (auto& p3d : point3D_usage_global) {
+			if (p3d.second < 2) {
+				scene._points3D.erase(p3d.first);
+			}
+		}
+
+		//fourth and last filtering cycle - deleting of invalid observations, which invalidity is due to removed 3D points
+
+		for (auto& image : scene._images) {
+			for (int i = 0; i < image.second._point2D.size(); ++i) {
+				if (!(scene._points3D.count(image.second._point2D[i]._id_point3D))) {
+					//image.second._point2D[i]._id_point3D = -1;				//unnecessary action, I suppose
+					image.second._point2D.erase(image.second._point2D.begin() + i);
+				}
+			}
+		}
+	}
+
 
 	void Algorithm::init(Scene& scene) const
 	{
+		//SceneFiltering(scene);
+
 		// init multithread routines
 		unsigned int num_threads = std::thread::hardware_concurrency();
 		if (num_threads != 0) {
