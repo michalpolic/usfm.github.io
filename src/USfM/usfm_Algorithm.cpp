@@ -178,7 +178,7 @@ namespace usfm {
 		std::vector<double> first_values;
 		for (auto image : scene._images) {
 			
-			// COLMAP produce some detections multiple times wich results in NaN rank deficient matrices
+			// COLMAP produce some detections multiple times wich results in NaNs and rank deficient matrices
 			// Test the thrid row if it is the same is the first one, and use different one if needed
 			int t = 0;
 			first_values.clear();
@@ -195,7 +195,7 @@ namespace usfm {
 					while(the_same_rows){
 						int column_id = J.outerIndexPtr()[image_offset + k];
 						for (int j = 0; j < 3; ++j) {			// test the first 3 values (there must be at least 3 values)
-							if (abs(first_values[j] - J.valuePtr()[column_id + j]) > abs(first_values[j]*0.05))	// there must be change at least 5% 
+							if (abs(first_values[j] - J.valuePtr()[column_id + j]) > abs(first_values[j]*0.005))	// there must be change at least 0.5% 
 								the_same_rows = false;
 						}
 						if (the_same_rows){						// use next row if it is similar to the first one
