@@ -32,23 +32,22 @@ namespace usfm {
 		//creating point3D usage map <id, number_of_uses>
 		std::map<int, int> point3D_usage_global;
 		for (auto& p3d : scene._points3D) {
-			point3D_usage_global.emplace(p3d.first, 0);
+			point3D_usage_global.emplace(p3d.first,0);
 		}
 
-		//first filtering cycle - recognizition of unvalid 3D points, afterwards deletenig 2Dpoints corresponding to them
+		//first filtering cycle - recognition of unvalid 3D points, afterwards deletenig 2Dpoints corresponding to them
 		for (auto& image : scene._images) {
-			std::map<int, short> point3D_rarity;   //could use different type, because of unused value here, bud map has easily accessible "contains" function
+			std::map<int, short> point3D_rarity;	//could use different type, because of unused value here, bud map has easily accessible "contains" function
 			for (int i = 0; i < image.second._point2D.size(); ++i) {
-				if (!(scene._points3D.count(image.second._point2D[i]._id_point3D))) {
-					//image.second._point2D[i]._id_point3D = -1;				//unnecessary action, I suppose
+				int p3d_id = image.second._point2D[i]._id_point3D;
+				if (!(scene._points3D.count(p3d_id))) {
 					image.second._point2D.erase(image.second._point2D.begin() + i);
 				}
-				if (!point3D_rarity.count(image.second._point2D[i]._id_point3D)) {
-					point3D_usage_global[image.second._point2D[i]._id_point3D] += 1;
-					point3D_rarity.emplace(image.second._point2D[i]._id_point3D, 0);
+				if (!point3D_rarity.count(p3d_id)) {
+					point3D_usage_global[p3d_id] += 1;
+					point3D_rarity.emplace(p3d_id, 0);
 				}
 				else {
-					//image.second._point2D[i]._id_point3D = -1;				//unnecessary action, I suppose
 					image.second._point2D.erase(image.second._point2D.begin() + i);
 				}
 			}
