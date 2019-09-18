@@ -27,7 +27,7 @@
 			  const double *run_opt = mxGetPr(mxGetField(settings, 0, std::string("run_opt").c_str()));
 			  mxArray *opt_radial = mxGetField(settings, 0, std::string("run_opt_radial").c_str());
 			  mxArray *opt_robust_lost = mxGetField(settings, 0, std::string("robust_lost").c_str());
-        mxArray *opt_nullspace_computation = mxGetField(settings, 0, std::string("return_nullspace").c_str());
+			  mxArray *opt_nullspace_computation = mxGetField(settings, 0, std::string("return_nullspace").c_str());
 
 			  scene._settings._alg = EAlgorithm_stringToEnum(alg);
 			  scene.setInputCovarianceEstimator(cov_model);
@@ -37,14 +37,13 @@
 				  const double *run_opt_radial = mxGetPr(opt_radial);
 				  scene._settings._run_opt_radial = (run_opt_radial[0] == 0 ? false : true);
 			  }
-
 			  if (opt_robust_lost != NULL) {		// process the optimization with robust lost function
 				  const double *run_robust_lost = mxGetPr(opt_robust_lost);
 				  scene._settings._robust_lost = (run_robust_lost[0] == 0 ? false : true);
 			  }
 
         if (opt_nullspace_computation != NULL) {		// return nullspace as additional output
-          const double *run_nullspace_computation = mxGetPr(opt_nullspace_computation);
+				const double *run_nullspace_computation = mxGetPr(opt_nullspace_computation);
           scene._settings._return_nullspace = (run_nullspace_computation[0] == 0 ? false : true);
         }
 			
@@ -121,8 +120,8 @@
 				  // covariances for observations
 				  double *xys_cov = NULL;
 				  mxArray *xys_cov_mx = mxGetField(image_cell, 0, std::string("xys_cov").c_str());
-				  const mwSize *nxys_cov = mxGetDimensions(xys_cov_mx);
-				  if (xys_cov_mx != NULL) {
+			      if (xys_cov_mx != NULL) {
+					  const mwSize *nxys_cov = mxGetDimensions(xys_cov_mx);
 					  if (nxys_cov[0] == npts[0])
 						  xys_cov = mxGetPr(xys_cov_mx);
 					  else
@@ -321,8 +320,8 @@
 		  i = 0;
 		  for (auto &img : scene._images) {
 			  std::shared_ptr<Projection> proj = Projection_Factory::createProjection(&img.second);
-			  const char *img_field_names[] = { "image_id", "q", "R", "t", "camera_id", "name", "xys", "point3D_ids" };
-			  mxArray *image_structure = mxCreateStructArray(2, dims, 8, img_field_names);
+			  const char *img_field_names[] = { "image_id", "q", "R", "t", "camera_id", "name", "xys", "xys_cov", "point3D_ids" };
+			  mxArray *image_structure = mxCreateStructArray(2, dims, 9, img_field_names);
 
 			  mxSetFieldByNumber(image_structure, 0, 0, mxCreateDoubleScalar((double)img.second._id));		// image_id
 			
@@ -360,11 +359,21 @@
 			  }
 			  mxSetFieldByNumber(image_structure, 0, 6, mx_xys);
 			
+			  mxArray *mx_xys_cov = mxCreateDoubleMatrix(N, 4, mxREAL);
+			  double *xys_cov = mxGetPr(mx_xys_cov);
+			  for (int j = 0; j < N; ++j) {
+				  xys_cov[j] = img.second._point2D[j]._xy_cov[0];
+				  xys_cov[j + N] = img.second._point2D[j]._xy_cov[1];
+				  xys_cov[j + 2*N] = img.second._point2D[j]._xy_cov[2];
+				  xys_cov[j + 3*N] = img.second._point2D[j]._xy_cov[3];
+			  }
+			  mxSetFieldByNumber(image_structure, 0, 7, mx_xys_cov);
+
 			  mxArray *mx_point3D_ids = mxCreateDoubleMatrix(N, 1, mxREAL);									// point3D_ids
 			  double *point3D_ids = mxGetPr(mx_point3D_ids);
 			  for (int j = 0; j < N; ++j)
 				  point3D_ids[j] = img.second._point2D[j]._id_point3D;
-			  mxSetFieldByNumber(image_structure, 0, 7, mx_point3D_ids);
+			  mxSetFieldByNumber(image_structure, 0, 8, mx_point3D_ids);
 			  mxSetCell(imgs_cell_array, i++, image_structure);
 		  }
 		  mxSetFieldByNumber(scene_structure, 0, 1, imgs_cell_array);
