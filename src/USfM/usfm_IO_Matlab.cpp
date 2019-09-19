@@ -128,6 +128,17 @@
 						  throw std::runtime_error("The size of the observations covariances does not match the number of observations.");
 				  }
 
+				  // covariance elipsoids, standard deviations for observations
+				  double *xys_std = NULL;
+				  mxArray *xys_std_mx = mxGetField(image_cell, 0, std::string("xys_std").c_str());
+				  if (xys_std_mx != NULL) {
+					  const mwSize *nxys_std = mxGetDimensions(xys_std_mx);
+					  if (nxys_std[0] == npts[0])
+						  xys_std = mxGetPr(xys_std_mx);
+					  else
+						  throw std::runtime_error("The size of the observations elipsoids does not match the number of observations.");
+				  }
+
 				  // save image to the scene
 				  int img_id = (int)*image_id;
 				  int cam_id = (int)*camera_id;
@@ -320,8 +331,8 @@
 		  i = 0;
 		  for (auto &img : scene._images) {
 			  std::shared_ptr<Projection> proj = Projection_Factory::createProjection(&img.second);
-			  const char *img_field_names[] = { "image_id", "q", "R", "t", "camera_id", "name", "xys", "xys_cov", "point3D_ids" };
-			  mxArray *image_structure = mxCreateStructArray(2, dims, 9, img_field_names);
+			  const char *img_field_names[] = { "image_id", "q", "R", "t", "camera_id", "name", "xys", "xys_cov", "xys_std", "point3D_ids" };
+			  mxArray *image_structure = mxCreateStructArray(2, dims, 10, img_field_names);
 
 			  mxSetFieldByNumber(image_structure, 0, 0, mxCreateDoubleScalar((double)img.second._id));		// image_id
 			
@@ -369,11 +380,21 @@
 			  }
 			  mxSetFieldByNumber(image_structure, 0, 7, mx_xys_cov);
 
+			  mxArray *mx_xys_std = mxCreateDoubleMatrix(N, 4, mxREAL);
+			  double *xys_std = mxGetPr(mx_xys_std);
+			  for (int j = 0; j < N; ++j) {
+				  xys_std[j] = img.second._point2D[j]._xy_std[0];
+				  xys_std[j + N] = img.second._point2D[j]._xy_std[1];
+				  xys_std[j + 2 * N] = img.second._point2D[j]._xy_std[2];
+				  xys_std[j + 3 * N] = img.second._point2D[j]._xy_std[3];
+			  }
+			  mxSetFieldByNumber(image_structure, 0, 8, mx_xys_std);
+
 			  mxArray *mx_point3D_ids = mxCreateDoubleMatrix(N, 1, mxREAL);									// point3D_ids
 			  double *point3D_ids = mxGetPr(mx_point3D_ids);
 			  for (int j = 0; j < N; ++j)
 				  point3D_ids[j] = img.second._point2D[j]._id_point3D;
-			  mxSetFieldByNumber(image_structure, 0, 8, mx_point3D_ids);
+			  mxSetFieldByNumber(image_structure, 0, 9, mx_point3D_ids);
 			  mxSetCell(imgs_cell_array, i++, image_structure);
 		  }
 		  mxSetFieldByNumber(scene_structure, 0, 1, imgs_cell_array);
