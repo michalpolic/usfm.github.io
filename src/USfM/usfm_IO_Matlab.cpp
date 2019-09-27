@@ -150,9 +150,13 @@
 					  p2d._xy[0] = xys[j];
 					  p2d._xy[1] = xys[npts[0] + j];
 					  p2d._id_point3D = (int)point3D_ids[j];
-					  if (xys_cov != NULL){			// add covariance of input obsrvations if known
+					  if (xys_cov != NULL) {			// add covariance of input obsrvations if known
 						  for (int k = 0; k < 4; ++k)
 							  p2d._xy_cov[k] = xys_cov[k*npts[0] + j];
+					  }
+					  if (xys_std != NULL) {			// add elipsoids of input obsrvations if known
+						  for (int k = 0; k < 4; ++k)
+							  p2d._xy_std[k] = xys_std[k*npts[0] + j];
 					  }
 					  if (p2d._id_point3D != -1)		// don't assume the observations without a 3D point  (TODO: assume them and filter later)
 						  scene._images[img_id]._point2D.push_back(p2d);
@@ -325,6 +329,8 @@
           camera_id: 1
           name: '↵'
           xys: [10×2 double]
+		  xys_cov: [10×4 double]
+		  xys_std: [10×4 double]
           point3D_ids: [10×1 double]*/
 		  mwSize img_dims[2] = { 1, scene._images.size() };
 		  mxArray *imgs_cell_array = mxCreateCellArray(2, img_dims);
