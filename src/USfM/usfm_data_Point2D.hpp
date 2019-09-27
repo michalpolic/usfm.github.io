@@ -20,6 +20,7 @@ namespace usfm {
 		int _id_point3D;
 		double _xy[2];
 		double _xy_cov[4] = { 1,0,0,1 };
+		double _xy_std[4] = { 1,0,0,1 };
 
 		bool operator< (const Point2D& p) const;
 	};
