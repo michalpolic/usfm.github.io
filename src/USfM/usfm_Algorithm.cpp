@@ -532,14 +532,15 @@ namespace usfm {
 		// propagation to points is less numerical senzitive and we can compute it in floats to speed it up
 		Eigen::SparseMatrix<float,Eigen::RowMajor> fYs = Eigen::SparseMatrix<float, Eigen::RowMajor>(Ys.cast<float>());
 		Eigen::MatrixXf fiZs = iZs.cast<float>();
-		Eigen::MatrixXf fiAs = iAs.cast<float>();
+		float *iA = (float*) malloc(sizeof(float) * iAs.nonZeros());
+		for (int i = 0; i < iAs.nonZeros(); ++i)
+			iA[i] = static_cast<float>(iAs.valuePtr()[i]);
 
 		// parallel sparse multiplication of needed blocks
 		const int *rowsY = fYs.outerIndexPtr();
 		const int *colsY = fYs.innerIndexPtr();
 		const float *valuesY = fYs.valuePtr();
 		const float *iZ = fiZs.data();
-		const float *iA = fiAs.data();
 
 		int n = fiZs.cols();			// munber of camera parameters
 		int nrowsY = fYs.rows();
@@ -585,6 +586,8 @@ namespace usfm {
 				v01 + iA[9 * i + 1], v11 + iA[9 * i + 4], v12 + iA[9 * i + 7],
 				v02 + iA[9 * i + 2], v12 + iA[9 * i + 5], v22 + iA[9 * i + 8];
 		}
+
+		free(iA);
 	}
 
 	// unscale the covariance matrices for points
