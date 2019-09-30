@@ -8,7 +8,7 @@
 * Author: Michal Polic, michal.polic(at)cvut.cz
 */
 
-#include "usfm_Algorithm.hpp"
+#include "USfM/usfm_Algorithm.hpp"
 #include "USfM/usfm_Projection.hpp"
 #include "USfM/usfm_Projection_Factory.hpp"
 #include <thread>
@@ -459,7 +459,7 @@ namespace usfm {
 	bool Algorithm::isNan(const SM &A) const {
 		for (int i = 0; i < A.outerSize(); ++i) {
 			for (Eigen::SparseMatrix<double>::InnerIterator it(A, i); it; ++it)
-				if (isnan(it.value()))
+				if (std::isnan(it.value()))
 					return true;
 		}
 		return false;
@@ -467,7 +467,7 @@ namespace usfm {
 
 	bool Algorithm::isNan(const DM &A) const {
 		for (int i = 0; i < A.rows() * A.cols(); i++) {
-			if (isnan(A.data()[i]))
+			if (std::isnan(A.data()[i]))
 				return true; 
 		}
 		return false;

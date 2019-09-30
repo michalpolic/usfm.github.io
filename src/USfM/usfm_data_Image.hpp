@@ -53,7 +53,7 @@ namespace usfm {
 		EImgModel getModel() const;
 
 		// get number of used parameters by the currently used model of camera
-		const int Image::numParams() const;
+		const int numParams() const;
 
 		// provide the offset in "_parameters" to the variable "var" if exist
 		int offset(const EImgParameter var) const;
