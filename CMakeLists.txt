@@ -78,23 +78,11 @@ endif()
 # -----------------------------------------------------------------------------
 # BLAS and LAPACK
 # -----------------------------------------------------------------------------
-#find_package(LAPACK REQUIRED)
-#if(LAPACK_FOUND)
-#  add_definitions(-DUSE_LAPACK)
-#  message( "Found LAPACK" )
-#  message( STATUS "> LAPACK_INCLUDE_DIRS: 0.3.6  ${LAPACK_INCLUDE_DIRS}" )
-#  message( STATUS "> LAPACK_LIBRARIES:   ${LAPACK_LIBRARIES}" )
-#endif()
-
-
-## -----------------------------------------------------------------------------
-## LAPACK AND BLAS LIBS
-## -----------------------------------------------------------------------------
-if(NOT UNC_MKL_SUPPORT AND UNIX)
+if(NOT USfM_MKL_SUPPORT)
   find_package(LAPACK REQUIRED)
   if(LAPACK_FOUND)
-	#add_definitions(-DUSE_MKL)
-    message("Found lapack and blas: ${LAPACK_LIBRARIES}")
+	add_definitions(-DUSE_LAPACK)
+    message("Found LAPACK: ${LAPACK_LIBRARIES}")
   endif()
 endif()
 

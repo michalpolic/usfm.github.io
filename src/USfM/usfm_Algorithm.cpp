@@ -15,11 +15,11 @@
 #ifdef USE_MKL
 	#include "mkl.h"
 #endif 
-//#ifdef USE_LAPACK
-//	#include "openblas/cblas.h"
-//	#include "f2c.h" 
-//	#include "clapack.h"
-//#endif
+#ifdef USE_LAPACK
+	#include "openblas/cblas.h"
+	#include "f2c.h" 
+	#include "clapack.h"
+#endif
 
 #include <cmath>
 
@@ -487,30 +487,31 @@ namespace usfm {
 			  std::cerr << "Lapack inverse error.";
 		  free(ipiv);
     #else
-  //    #ifdef USE_LAPACK    
-		//integer info = 0;
-		//integer N = A.rows();
-		//integer *ipiv = (integer*)malloc(N * sizeof(integer));
-  //      // LU
-		//dgetrf_(&N, &N, A.data(), &N, ipiv, &info);
-  //      if (info != 0)
-  //        std::cerr << "LU decomposition error.";
-  //      // inverse
-  //      double workdim = 0;
-		//integer lwork = -1;
-  //      dgetri_(&N, A.data(), &N, ipiv, &workdim, &lwork, &info);
-  //      if (info != 0)
-  //        std::cerr << "Lapack size of work array error.";
-  //      lwork = (integer) workdim;
-  //      double *work = (double*)malloc(workdim * sizeof(double));
-  //      dgetri_(&N, A.data(), &N, ipiv, work, &lwork, &info);
-  //      if (info != 0)
-  //        std::cerr << "Lapack size of work array error.";
-  //      free(ipiv);
-  //    #else
-        // Eigen
-        A = A.inverse();
-  // #endif
+		#ifdef USE_LAPACK    
+			int info = 0;
+			int N = A.rows();
+			int *ipiv = (int*)malloc(N * sizeof(int));
+			// LU
+			dgetrf_(&N, &N, A.data(), &N, ipiv, &info);
+			if (info != 0)
+			  std::cerr << "LU decomposition error.";
+			
+			// inverse
+			double workdim = 0;
+			int lwork = -1;
+			dgetri_(&N, A.data(), &N, ipiv, &workdim, &lwork, &info);
+			if (info != 0)
+			  std::cerr << "Lapack size of work array error.";
+			lwork = (integer) workdim;
+			double *work = (double*)malloc(workdim * sizeof(double));
+			dgetri_(&N, A.data(), &N, ipiv, work, &lwork, &info);
+			if (info != 0)
+			  std::cerr << "Lapack size of work array error.";
+			free(ipiv);
+		#else
+			// Eigen
+			A = A.inverse();
+		#endif
     #endif
 	}
 

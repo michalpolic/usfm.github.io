@@ -21,12 +21,14 @@ target_include_directories(usfm
     ${EIGEN3_INCLUDE_DIRS}
 	${OPENBLAS_INCLUDE_DIRS}
 	${CLAPACK_INCLUDE_DIRS}
+	${LAPACK_INCLUDE_DIRS}
     ${SUITESPARSE_INCLUDE_DIRS}
     ${CERES_INCLUDE_DIRS}
     ${Matlab_INCLUDE_DIRS} # optional
     ${MEX_INCLUDE_DIR} # optional
     ${Boost_INCLUDE_DIRS}
 	${MKL_INCLUDE_DIR}
+	${INCLUDE_DIRS}
   )
 target_link_libraries(usfm
 	#${EIGEN3_INCLUDE_DIRS}
@@ -37,7 +39,10 @@ target_link_libraries(usfm
 	${Matlab_LIBRARIES} # optional
 	${Boost_LIBRARIES}
 	${MKL_LIBRARIES}
+	${LAPACK_LIBRARIES}
   )
+
+
 target_compile_definitions(usfm
   PUBLIC ${EIGEN_FLAGS}
   )

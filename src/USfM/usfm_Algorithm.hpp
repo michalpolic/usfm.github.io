@@ -26,6 +26,10 @@ typedef Eigen::Triplet<double> Tri;
 
 
 namespace usfm {
+#ifdef USE_LAPACK 
+	extern "C" void dgetrf_(int* N, int* LDA, double* A, int* M, int* ipiv, int* info);
+	extern "C" void dgetri_(int* N, double* A, int* LDA, int* ipiv, double* workdim, int* lwork, int* info);
+#endif
 
 	inline bool point2DComparator(Point2D first, Point2D second);
 	void SceneFiltering(Scene &scene);
