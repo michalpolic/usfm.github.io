@@ -54,7 +54,7 @@ namespace usfm {
 
 	double Statistic::getDouble(std::string name) {
 		for (int i = 0; i < _items.size(); ++i) {
-			if (strcmp(_items[i]._name.c_str(), name.c_str())) {
+			if (std::strcmp(_items[i]._name.c_str(), name.c_str())) {
 				switch (_items[i]._value_type) {
 					case double_type: return _items[i]._value_double;
 					case int_type: return _items[i]._value_int;
@@ -71,7 +71,7 @@ namespace usfm {
 
 	int Statistic::getInt(std::string name) {
 		for (int i = 0; i < _items.size(); ++i) {
-			if (strcmp(_items[i]._name.c_str(), name.c_str())) {
+			if (std::strcmp(_items[i]._name.c_str(), name.c_str())) {
 				switch (_items[i]._value_type) {
 				case double_type: return (int) _items[i]._value_double;
 				case int_type: return _items[i]._value_int;
@@ -88,7 +88,7 @@ namespace usfm {
 
 	std::string Statistic::getString(std::string name) {
 		for (int i = 0; i < _items.size(); ++i) {
-			if (strcmp(_items[i]._name.c_str(), name.c_str())) {
+			if (std::strcmp(_items[i]._name.c_str(), name.c_str())) {
 				switch (_items[i]._value_type) {
 				case double_type: return std::to_string(_items[i]._value_double);
 				case int_type: return std::to_string(_items[i]._value_int);
