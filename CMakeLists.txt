@@ -18,8 +18,6 @@ option(USfM_BUILD_MEX "Build MEX (require Matlab)" OFF)
 option(USfM_BUILD_TESTS "Build unit tests" OFF)
 option(USfM_MKL_SUPPORT "Build with MKL" OFF)
 
-MESSAGE("OpenBLAS_DIR: ${OpenBLAS_DIR}") 
-
 # -----------------------------------------------------------------------------
 # SYSTEM LIBRARY - FOR LINUX
 # -----------------------------------------------------------------------------
@@ -154,15 +152,15 @@ endif()
 # -----------------------------------------------------------------------------
 # Boost
 # -----------------------------------------------------------------------------
-find_package(Boost REQUIRED)
-
-if(Boost_FOUND)
-  message("Found Boost")
-  message(STATUS "> Boost_INCLUDE_DIRS:   ${Boost_INCLUDE_DIRS}")
-  message(STATUS "> Boost_LIBRARIES:   ${Boost_LIBRARIES}")
-else()
-  message(WARNING "Failed to find the Boost library.")
-endif()
+#find_package(Boost REQUIRED)
+#
+#if(Boost_FOUND)
+#  message("Found Boost")
+#  message(STATUS "> Boost_INCLUDE_DIRS:   ${Boost_INCLUDE_DIRS}")
+#  message(STATUS "> Boost_LIBRARIES:   ${Boost_LIBRARIES}")
+#else()
+#  message(WARNING "Failed to find the Boost library.")
+#endif()
 
 # -----------------------------------------------------------------------------
 # Add project source code

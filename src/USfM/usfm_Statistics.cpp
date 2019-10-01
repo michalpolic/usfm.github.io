@@ -13,13 +13,21 @@
 namespace usfm {
 
 	// structure for holding the values of any type
-	StatisticItem::StatisticItem(std::string name, boost::variant<double, int, std::string> value):
-		_name(name), _value(value) {}
+	StatisticItem::StatisticItem(std::string name, double value) :
+		_name(name), _value_double(value), _value_type(double_type) {}
+	StatisticItem::StatisticItem(std::string name, int value) :
+		_name(name), _value_int(value), _value_type(int_type) {}
+	StatisticItem::StatisticItem(std::string name, std::string value) :
+		_name(name), _value_str(value), _value_type(string_type) {}
+
 
 	std::ostream& operator<< (std::ostream& out, const StatisticItem& s) {
-		return out << s._name << ": " << s._value;
+		switch (s._value_type) {
+			case double_type: return out << s._name << ": " << s._value_double;
+			case int_type: return out << s._name << ": " << s._value_int;
+			case string_type: return out << s._name << ": " << s._value_str;
+		}
 	}
-
 
 	// init of the statistics
 	Statistic::Statistic() {
@@ -28,7 +36,13 @@ namespace usfm {
 	}
 
 	// add/clear the statistics
-	void Statistic::addItem(std::string name, boost::variant<double, int, std::string> value) {
+	void Statistic::addItem(std::string name, double value) {
+		_items.push_back(StatisticItem(name, value));
+	}
+	void Statistic::addItem(std::string name, int value) {
+		_items.push_back(StatisticItem(name, value));
+	}
+	void Statistic::addItem(std::string name, std::string value) {
 		_items.push_back(StatisticItem(name, value));
 	}
 	void Statistic::addTimestampItem(std::string name) {
@@ -38,13 +52,54 @@ namespace usfm {
 		_items.clear();
 	}
 
-	boost::variant<double, int, std::string> Statistic::getItem(std::string name) {
+	double Statistic::getDouble(std::string name) {
 		for (int i = 0; i < _items.size(); ++i) {
-			if (strcmp(_items[i]._name.c_str(), name.c_str()))
-				return _items[i]._value;
+			if (strcmp(_items[i]._name.c_str(), name.c_str())) {
+				switch (_items[i]._value_type) {
+					case double_type: return _items[i]._value_double;
+					case int_type: return _items[i]._value_int;
+					case string_type:
+						double out;
+						std::stringstream ss(_items[i]._value_str);
+						ss >> out;
+						return out;
+				}
+			}
 		}
 		throw std::runtime_error("The required item is not in statistic object.");
 	}
+
+	int Statistic::getInt(std::string name) {
+		for (int i = 0; i < _items.size(); ++i) {
+			if (strcmp(_items[i]._name.c_str(), name.c_str())) {
+				switch (_items[i]._value_type) {
+				case double_type: return (int) _items[i]._value_double;
+				case int_type: return _items[i]._value_int;
+				case string_type:
+					int out;
+					std::stringstream ss(_items[i]._value_str);
+					ss >> out;
+					return out;
+				}
+			}
+		}
+		throw std::runtime_error("The required item is not in statistic object.");
+	}
+
+	std::string Statistic::getString(std::string name) {
+		for (int i = 0; i < _items.size(); ++i) {
+			if (strcmp(_items[i]._name.c_str(), name.c_str())) {
+				switch (_items[i]._value_type) {
+				case double_type: return std::to_string(_items[i]._value_double);
+				case int_type: return std::to_string(_items[i]._value_int);
+				case string_type: return _items[i]._value_str;
+				}
+			}
+		}
+		throw std::runtime_error("The required item is not in statistic object.");
+	}
+
+
 
 	void Statistic::updateLastTimestamp() {
 		_last_timestamp = Clock::now();

@@ -14,7 +14,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <boost/variant.hpp>
+#include <sstream> 
 
 //////////////////////////////////////////////////////////////////////////////////////
 #include <chrono>
@@ -26,11 +26,23 @@ typedef Clock::time_point tp;
 
 namespace usfm {
 
+	enum stat_value_type {
+		double_type,
+		int_type,
+		string_type
+	};
+
 	struct StatisticItem {
 		std::string _name;
-		boost::variant<double, int, std::string> _value;
-
-		StatisticItem(std::string name, boost::variant<double, int, std::string> value);
+		
+		stat_value_type _value_type;
+		double _value_double;
+		int _value_int;
+		std::string _value_str;
+		
+		StatisticItem(std::string name, double value);
+		StatisticItem(std::string name, int value);
+		StatisticItem(std::string name, std::string value);
 	};
 
 	std::ostream& operator<< (std::ostream& out, const StatisticItem& s); 
@@ -45,11 +57,15 @@ namespace usfm {
 
 		// vector of statistics
 		std::vector<StatisticItem> _items;
-		void addItem(std::string name, boost::variant<double, int, std::string> value);
+		void addItem(std::string name, double value);
+		void addItem(std::string name, int value);
+		void addItem(std::string name, std::string value);
 		void addTimestampItem(std::string name);
 		void clear();
 
-		boost::variant<double, int, std::string> getItem(std::string name);
+		double getDouble(std::string name);
+		int getInt(std::string name);
+		std::string getString(std::string name);
 
 		// time
 		void updateLastTimestamp();
