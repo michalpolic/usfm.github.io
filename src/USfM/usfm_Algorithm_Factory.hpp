@@ -26,7 +26,6 @@ namespace usfm {
 	inline std::string EAlgorithm_enumToString(EAlgorithm alg);
 	inline EAlgorithm EAlgorithm_stringToEnum(const std::string& algorithm);
 
-
 	// Generate the io object for selected input file format
 	class Algorithm_Factory {
 	public:

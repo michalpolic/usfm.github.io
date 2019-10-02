@@ -27,6 +27,7 @@ namespace usfm {
 			case int_type: return out << s._name << ": " << s._value_int;
 			case string_type: return out << s._name << ": " << s._value_str;
 		}
+		return out;
 	}
 
 	// init of the statistics

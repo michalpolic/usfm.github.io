@@ -38,18 +38,17 @@ namespace usfm {
 
 	// Read cameras from txt file 
 	bool IO_Colmap::readCameras(const std::string& file_path, Scene& scene) {
-		std::ifstream file;
+		//std::ifstream file;
 		//file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		bool camerasLoaded = false;
 
 		try {
-			file.open(file_path, std::ios_base::in);
+			//file.open(file_path, std::ios_base::in);
+			std::ifstream file(file_path);
 
 			// read lines
 			std::string line = std::string();
-			while (!file.eof()) {
-				line.clear();
-				getline(file, line);
+			while (!safeGetline(file, line).eof()) {
 				if (line.size() > 1 && line.at(0) != '#') {
 					std::istringstream line_stream(line);
 					//line_stream.exceptions(std::ios::failbit);
@@ -68,11 +67,12 @@ namespace usfm {
 				}
 			}
 			camerasLoaded = true;
+			file.close();
 		} 
 		catch (const std::ifstream::failure& e) {
 			std::cerr << "Exception opening/reading file <path_to/cameras.txt>: " << e.what();
 		}
-		file.close();
+		
 		return camerasLoaded;
 	}
 
@@ -88,9 +88,7 @@ namespace usfm {
 
 			// read lines
 			std::string line = std::string();
-			while (!file.eof()) {
-				line.clear();
-				getline(file, line);
+			while (!safeGetline(file, line).eof()) {
 				if (line.size() > 1 && line.at(0) != '#') {
 					std::istringstream line_stream(line);
 					//line_stream.exceptions(std::ios::failbit);
@@ -138,9 +136,7 @@ namespace usfm {
 
 			// read lines
 			std::string line = std::string();
-			while (!file.eof()) {
-				line.clear();
-				getline(file, line);
+			while (!safeGetline(file, line).eof()) {
 				if (line.size() > 1 && line.at(0) != '#') {
 					Point3D p = Point3D();
 					std::istringstream line_stream(line);
