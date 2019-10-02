@@ -124,7 +124,8 @@ if(USfM_BUILD_MEX)
 				"${MATLAB_LIBS_ROOT}/libmx.so"
 				"${MATLAB_LIBS_ROOT}/libmat.so"
 				"${MATLAB_LIBS_ROOT}/libeng.so"
-				"${MATLAB_LIBS_ROOT}/libmex.so")
+				"${MATLAB_LIBS_ROOT}/libmex.so"
+        "${MATLAB_LIBS_ROOT}/libunwind.so.8")
     else()
       set(Matlab_LIBRARIES ${Matlab_LIBRARIES}
 				"${MATLAB_LIBS_ROOT}/libmx.lib"
