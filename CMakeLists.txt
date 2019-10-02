@@ -117,14 +117,15 @@ if(USfM_BUILD_MEX)
     message("Found Matlab libraries")
     message(STATUS "Matlab_INCLUDE_DIRS: ${Matlab_INCLUDE_DIRS}")
     set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Matlab_INCLUDE_DIRS})
-	LIST(GET Matlab_LIBRARIES 1 Matlab_LIB)
+	LIST(GET Matlab_LIBRARIES 0 Matlab_LIB)
 	get_filename_component(MATLAB_LIBS_ROOT ${Matlab_LIB} DIRECTORY)  # ${Matlab_LIBRARIES} doesn't contain all required libs
     if(UNIX)
       set(Matlab_LIBRARIES ${Matlab_LIBRARIES}
 				"${MATLAB_LIBS_ROOT}/libmx.so"
 				"${MATLAB_LIBS_ROOT}/libmat.so"
 				"${MATLAB_LIBS_ROOT}/libeng.so"
-				"${MATLAB_LIBS_ROOT}/libmex.so")
+				"${MATLAB_LIBS_ROOT}/libmex.so"
+        "${MATLAB_LIBS_ROOT}/libunwind.so.8")
     else()
       set(Matlab_LIBRARIES ${Matlab_LIBRARIES}
 				"${MATLAB_LIBS_ROOT}/libmx.lib"

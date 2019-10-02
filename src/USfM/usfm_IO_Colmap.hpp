@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iterator>
 
 #include "USfM/usfm_IO.hpp"
 #include "USfM/usfm_data_Scene.hpp"

@@ -15,11 +15,6 @@
 #ifdef USE_MKL
 	#include "mkl.h"
 #endif 
-#ifdef USE_LAPACK
-	#include "openblas/cblas.h"
-	#include "f2c.h" 
-	#include "clapack.h"
-#endif
 
 #include <cmath>
 
@@ -487,7 +482,8 @@ namespace usfm {
 			  std::cerr << "Lapack inverse error.";
 		  free(ipiv);
     #else
-		#ifdef USE_LAPACK    
+		#ifdef USE_LAPACK   
+			// lapack
 			int info = 0;
 			int N = A.rows();
 			int *ipiv = (int*)malloc(N * sizeof(int));
@@ -502,7 +498,7 @@ namespace usfm {
 			dgetri_(&N, A.data(), &N, ipiv, &workdim, &lwork, &info);
 			if (info != 0)
 			  std::cerr << "Lapack size of work array error.";
-			lwork = (integer) workdim;
+			lwork = (int) workdim;
 			double *work = (double*)malloc(workdim * sizeof(double));
 			dgetri_(&N, A.data(), &N, ipiv, work, &lwork, &info);
 			if (info != 0)
