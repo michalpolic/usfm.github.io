@@ -33,12 +33,11 @@ How to build on Windows:
 
 How to build on Linux:
 1) Instal ceres acording: http://ceres-solver.org
-2) Instal boost using apt package manager
-3) Use Cmake to create the makefile in "build" directory, e.g., 
+2) Use Cmake to create the makefile in "build" directory, e.g., 
 > cd usfm.github.io
 > mkdir build
 > cd build
 > cmake .. 
 [OPTIONAL] you can setup the camke variables as in Windows version, see. 4.2, 4.3, 4.4. In command line use -D<name of the variable>=<value of the variable> to setup variables.
-4) Build the makefile:
+3) Build the makefile:
 > make 
