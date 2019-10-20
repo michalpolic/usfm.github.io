@@ -4,7 +4,7 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 /*
-* File:   usfm_Projection_Simple_Radial.cpp
+* File:   usfm_Projection.cpp
 * Author: Michal Polic, michal.polic(at)cvut.cz
 */
 
@@ -50,5 +50,9 @@ namespace usfm {
 			cam->_offset_in_parameters[tmp_param] = current_offset;
 	}
 
+	void Projection::exchangeParameters(Camera *cam, const std::vector<ECameraParameter> params) {
+		for (int i = 0; i < params.size(); ++i)
+			exchangeParameters(cam, i, params[i]);
+	}
 
 }

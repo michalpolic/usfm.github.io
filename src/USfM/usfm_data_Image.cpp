@@ -14,6 +14,8 @@
 
 namespace usfm {
 
+	IP::IP(int offset, EImgParameter parameter) : _offset(offset), _parameter(parameter) {};
+
 	Image::Image() {}
 
 	Image::Image(const int id, const int cam_id, const double q[4], const double t[3]) {
@@ -54,6 +56,12 @@ namespace usfm {
 		return _num_params;
 	}
 
+	// set offset 
+	void Image::setOffset(const std::vector<IP> params) {
+		for (int i = 0; i < params.size(); ++i)
+			_offset_in_parameters[params[i]._parameter] = params[i]._offset;
+	}
+
 	// provide the offset in "_parameters" to the variable "var" if exist
 	int Image::offset(const EImgParameter var) const {
 		if (_offset_in_parameters.find(var) == _offset_in_parameters.end())
@@ -72,6 +80,36 @@ namespace usfm {
 			_parameters[offset(var) + i] = values[i];
 	}
 
+	// order the parameters according selected image model
+	void Image::reorderParams(EImgModel model){
+		std::vector<double> sorted_params;
+		sorted_params.resize(22);
+
+		switch (model){
+		case eAAC:
+			for (int i = 0; i < 3; ++i)
+				sorted_params[i + 0] = value(e_aa)[i];
+			for (int i = 0; i < 3; ++i)
+				sorted_params[i + 3] = value(e_C)[i];
+			for (int i = 0; i < 4; ++i)
+				sorted_params[i + 6] = value(e_q)[i];
+			for (int i = 0; i < 3; ++i)
+				sorted_params[i + 10] = value(e_t)[i];
+			for (int i = 0; i < 9; ++i)
+				sorted_params[i + 13] = value(e_R)[i];
+			memcpy((void*)_parameters.data(), (void*)sorted_params.data(), 22 * sizeof(double));
+			setOffset(std::vector<IP>{IP(0, e_aa), IP(3, e_C), IP(6, e_q), IP(10, e_t), IP(13, e_R)});
+			break;
+
+		case eAACRS:
+			throw std::runtime_error("Error: the rolling shuter image model is not implemented yet!");
+			break;
+
+		default:
+			throw std::runtime_error("Error: unknown image model!");
+			break;
+		}
+	}
 
 	// compute the rotation, angle-axis and camera center
 	// external parameters from quaternion and translation

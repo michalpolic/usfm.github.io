@@ -62,7 +62,8 @@ endif()
 ## -----------------------------------------------------------------------------
 if(USfM_MKL_SUPPORT)
 	find_package(MKL QUIET)
-  if(MKL_FOUND)
+	
+  if(MKL_FOUND OR MKL_INCLUDE_DIR)
 	add_definitions(-DUSE_MKL)
     message( "Found Intel MKL" )
     message( STATUS "> MKL_INCLUDE_DIR: ${MKL_INCLUDE_DIR}"   )
@@ -85,6 +86,9 @@ if(NOT USfM_MKL_SUPPORT)
     message("Found LAPACK: ${LAPACK_LIBRARIES}")
   endif()
 endif()
+
+
+find_package(Threads REQUIRED)
 
 
 # -----------------------------------------------------------------------------
@@ -125,7 +129,7 @@ if(USfM_BUILD_MEX)
 				"${MATLAB_LIBS_ROOT}/libmat.so"
 				"${MATLAB_LIBS_ROOT}/libeng.so"
 				"${MATLAB_LIBS_ROOT}/libmex.so"
-        "${MATLAB_LIBS_ROOT}/libunwind.so.8")
+				"${MATLAB_LIBS_ROOT}/libunwind.so.8")
     else()
       set(Matlab_LIBRARIES ${Matlab_LIBRARIES}
 				"${MATLAB_LIBS_ROOT}/libmx.lib"

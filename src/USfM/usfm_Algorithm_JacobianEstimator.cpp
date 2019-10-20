@@ -20,8 +20,10 @@ namespace usfm {
 		//std::cout.precision(17);
 
 		// test of the reprojection error for I_DIVISON2 model
-		//double res[2];
-		//scene._projections[0]->computeResidual(res); 
+		double res[2];
+		scene._projections[0]->computeResidual(res); 
+		scene._projections[10]->computeResidual(res);
+		scene._projections[50]->computeResidual(res);
 
 		// find radial distortion parameters
 		if (scene._settings._run_opt_radial)
@@ -32,10 +34,10 @@ namespace usfm {
 		//std::cout << scene._jacobian << "\n\n\n";
 		//std::cout << "J: " << isNan(scene._jacobian) << "\n";
 
-    // the nullspace
-    DM &H = scene._H;		// the nullspace of jacobian of projection function
-    if (scene._settings._return_nullspace)
-      computeJacobianNullspace(scene, H);
+		// the nullspace
+		DM &H = scene._H;		// the nullspace of jacobian of projection function
+		if (scene._settings._return_nullspace)
+		  computeJacobianNullspace(scene, H);
 
 		// close and clear
 		finish();

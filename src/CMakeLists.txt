@@ -13,6 +13,10 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 file(GLOB USfM_HEADERS "USfM/*.hpp")
 file(GLOB USfM_SOURCES "USfM/*.cpp")
 
+
+message(STATUS "LAPACK_LIBRARIES = ${LAPACK_LIBRARIES}")
+
+
 add_library(usfm SHARED ${USfM_HEADERS} ${USfM_SOURCES})
 target_include_directories(usfm
   PUBLIC
@@ -26,7 +30,6 @@ target_include_directories(usfm
     ${CERES_INCLUDE_DIRS}
     ${Matlab_INCLUDE_DIRS} # optional
     ${MEX_INCLUDE_DIR} # optional
-    ${Boost_INCLUDE_DIRS}
 	${MKL_INCLUDE_DIR}
 	${INCLUDE_DIRS}
   )
@@ -37,7 +40,6 @@ target_link_libraries(usfm
 	${SUITESPARSE_LIBRARIES}
 	${CERES_LIBRARIES}
 	${Matlab_LIBRARIES} # optional
-	${Boost_LIBRARIES}
 	${MKL_LIBRARIES}
 	${LAPACK_LIBRARIES}
   )

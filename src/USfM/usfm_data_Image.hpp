@@ -32,6 +32,14 @@ namespace usfm {
 		e_R = 4		// double R[9] - rotation matrix (Eigen format)
 	};
 
+	// class for saving pair: offset - EImgParameter
+	class IP {
+	public:
+		int _offset;
+		EImgParameter _parameter;
+		IP(int offset, EImgParameter parameter);
+	};
+
 
 	class Image {
 	public:
@@ -55,8 +63,14 @@ namespace usfm {
 		// get number of used parameters by the currently used model of camera
 		const int numParams() const;
 
+		// set offset 
+		void setOffset(const std::vector<IP> params);
+
 		// provide the offset in "_parameters" to the variable "var" if exist
 		int offset(const EImgParameter var) const;
+
+		// order the parameters according selected image model
+		void reorderParams(EImgModel model);
 
 		// provide the variable "var" if exist
 		double* value(const EImgParameter var) const;

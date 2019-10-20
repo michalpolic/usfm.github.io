@@ -21,6 +21,11 @@
 #include "USfM/usfm_Projection_Division2.hpp"
 #include "USfM/usfm_Projection_Division3.hpp"
 #include "USfM/usfm_Projection_Division4.hpp"
+#include "USfM/usfm_Projection_Radial1Division1.hpp"
+#include "USfM/usfm_Projection_Radial2Division2.hpp"
+#include "USfM/usfm_Projection_Radial3Division1.hpp"
+#include "USfM/usfm_Projection_Radial3Division2.hpp"
+#include "USfM/usfm_Projection_Radial3Division3.hpp"
 #include "USfM/usfm_Projection_InverseDivision1.hpp"
 #include "USfM/usfm_Projection_InverseDivision2.hpp"
 #include "USfM/usfm_Projection_OpenCV.hpp"
@@ -83,11 +88,26 @@ namespace usfm {
 		if (camModel == eDivision4 && imgModel == eAAC)
 			return std::make_shared<ProjectionDivision4>(camera, image, X, obs);
     
-    if (camModel == eInverseDivision1 && imgModel == eAAC)
-      return std::make_shared<ProjectionInverseDivision1>(camera, image, X, obs);
+		if (camModel == eRadial1Division1 && imgModel == eAAC)
+			return std::make_shared<ProjectionRadial1Division1>(camera, image, X, obs);
+
+		if (camModel == eRadial2Division2 && imgModel == eAAC)
+			return std::make_shared<ProjectionRadial2Division2>(camera, image, X, obs);
+
+		if (camModel == eRadial3Division1 && imgModel == eAAC)
+			return std::make_shared<ProjectionRadial3Division1>(camera, image, X, obs);
+
+		if (camModel == eRadial3Division2 && imgModel == eAAC)
+			return std::make_shared<ProjectionRadial3Division2>(camera, image, X, obs);
+
+		if (camModel == eRadial3Division3 && imgModel == eAAC)
+			return std::make_shared<ProjectionRadial3Division3>(camera, image, X, obs);
+
+		if (camModel == eInverseDivision1 && imgModel == eAAC)
+			return std::make_shared<ProjectionInverseDivision1>(camera, image, X, obs);
     
-    if (camModel == eInverseDivision2 && imgModel == eAAC)
-      return std::make_shared<ProjectionInverseDivision2>(camera, image, X, obs);
+		if (camModel == eInverseDivision2 && imgModel == eAAC)
+			return std::make_shared<ProjectionInverseDivision2>(camera, image, X, obs);
 
 		if (camModel == eOpenCv && imgModel == eAAC)
 			return std::make_shared<ProjectionOpenCV>(camera, image, X, obs);

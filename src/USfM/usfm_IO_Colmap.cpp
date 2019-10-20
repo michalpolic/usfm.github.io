@@ -176,10 +176,20 @@ namespace usfm {
 			return eDivision3;
 		if (colmap_model == "DIVISION4")
 			return eDivision4;
-    if (colmap_model == "I_DIVISION1")
-      return eInverseDivision1;
-    if (colmap_model == "I_DIVISION2")
-      return eInverseDivision2;
+		if (colmap_model == "RADIAL1_DIVISION1")
+			return eRadial1Division1;
+		if (colmap_model == "RADIAL2_DIVISION2")
+			return eRadial2Division2;
+		if (colmap_model == "RADIAL3_DIVISION1")
+			return eRadial3Division1;
+		if (colmap_model == "RADIAL3_DIVISION2")
+			return eRadial3Division2;
+		if (colmap_model == "RADIAL3_DIVISION3")
+			return eRadial3Division3;
+		if (colmap_model == "I_DIVISION1")
+			return eInverseDivision1;
+		if (colmap_model == "I_DIVISION2")
+			return eInverseDivision2;
 		if (colmap_model == "SIMPLE_RADIAL_FISHEYE")
 			return eRadial1Fisheye;
 		if (colmap_model == "RADIAL_FISHEYE")
@@ -218,10 +228,20 @@ namespace usfm {
 			return std::string("DIVISION3");
 		if (colmap_model == eDivision4)
 			return std::string("DIVISION4");
-    if (colmap_model == eInverseDivision1)
-      return std::string("I_DIVISION1");
-    if (colmap_model == eInverseDivision2)
-      return std::string("I_DIVISION2");
+		if (colmap_model == eRadial1Division1)
+			return std::string("RADIAL1_DIVISION1");
+		if (colmap_model == eRadial2Division2)
+			return std::string("RADIAL2_DIVISION2");
+		if (colmap_model == eRadial3Division1)
+			return std::string("RADIAL3_DIVISION1");
+		if (colmap_model == eRadial3Division2)
+			return std::string("RADIAL3_DIVISION2");
+		if (colmap_model == eRadial3Division3)
+			return std::string("RADIAL3_DIVISION3");
+		if (colmap_model == eInverseDivision1)
+			return std::string("I_DIVISION1");
+		if (colmap_model == eInverseDivision2)
+			return std::string("I_DIVISION2");
 		if (colmap_model == eRadial1Fisheye)
 			return std::string("SIMPLE_RADIAL_FISHEYE");
 		if (colmap_model == eRadial2Fisheye)

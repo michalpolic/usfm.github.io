@@ -49,6 +49,7 @@ namespace usfm {
 		// Exchange two doubles and return the pointer to the new position of v2
 		void exchangeParameters(double* arr, const int desired_offset, const int currnet_offset);
 		void exchangeParameters(Camera *cam, const int desired_offset, const ECameraParameter param);
+		void exchangeParameters(Camera *cam, const std::vector<ECameraParameter> params);
 	};
 
 

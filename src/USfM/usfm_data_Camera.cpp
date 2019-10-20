@@ -63,6 +63,12 @@ namespace usfm {
 		return _num_params;
 	}
 
+	// set the offsets
+	void Camera::setOffset(const std::vector<ECameraParameter> params) {
+		for (int i = 0; i < params.size(); ++i)
+			_offset_in_parameters[params[i]] = i;
+	}
+
 	// provide the offset in "_parameters" to the variable "var" if exist
 	int Camera::offset(const ECameraParameter var) const {
 		if (_offset_in_parameters.find(var) == _offset_in_parameters.end())

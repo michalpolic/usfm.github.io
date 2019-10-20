@@ -18,43 +18,48 @@
 namespace usfm {
 
 	enum ECameraModel {
-		eSimplePinhole = 0,
-		ePinhole = 1,
-		eRadial1 = 2,
-		eRadial2 = 3,
-		eRadial3 = 4,
-		eRadial4 = 5,
-		eRadial1Fisheye = 6,
-		eRadial2Fisheye = 7,
-		eOpenCv = 8,
-		eOpenCvFisheye = 9,
-		eOpenCFull = 10,
-		eFOV = 11,
-		eThinPrismFisheye = 12,
-		eDivision1 = 13,
-		eDivision2 = 14,
-		eDivision3 = 15,
-		eDivision4 = 16,
-    eInverseDivision1 = 17,
-    eInverseDivision2 = 18
+		eSimplePinhole,
+		ePinhole,
+		eRadial1,
+		eRadial2,
+		eRadial3,
+		eRadial4,
+		eRadial1Fisheye,
+		eRadial2Fisheye,
+		eOpenCv,
+		eOpenCvFisheye,
+		eOpenCFull,
+		eFOV,
+		eThinPrismFisheye,
+		eDivision1,
+		eDivision2,
+		eDivision3,
+		eDivision4,
+		eInverseDivision1,
+		eInverseDivision2,
+		eRadial1Division1,
+		eRadial2Division2,
+		eRadial3Division1,
+		eRadial3Division2,
+		eRadial3Division3
 	};
 
 	enum ECameraParameter {
-		e_f = 0,
-		e_fx = 1,
-		e_fy = 2,
-		e_cx = 3,
-		e_cy = 4,
-		e_k1 = 5,
-		e_k2 = 6,
-		e_k3 = 7,
-		e_k4 = 8,
-		e_k5 = 9,
-		e_k6 = 10,
-		e_p1 = 11,
-		e_p2 = 12,
-		e_img_width = 13,
-		e_img_height = 14
+		e_f,
+		e_fx,
+		e_fy,
+		e_cx,
+		e_cy,
+		e_k1,
+		e_k2,
+		e_k3,
+		e_k4,
+		e_k5,
+		e_k6,
+		e_p1,
+		e_p2,
+		e_img_width,
+		e_img_height
 	};
 
 	class Camera {
@@ -73,6 +78,9 @@ namespace usfm {
 
 		// get number of used parameters by the currently used model of camera
 		const int numParams() const;
+
+		// set offset 
+		void setOffset(const std::vector<ECameraParameter> params);
 
 		// provide the offset in "_parameters" to the variable "var" if exist
 		int offset(const ECameraParameter var) const;

@@ -29,7 +29,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		exit(1);
 	Statistic statistic = Statistic();
 	Scene scene = Scene();
-
+	
 	// read input data
 	std::shared_ptr<IO_Matlab> io;
 	io->read(prhs, scene);
