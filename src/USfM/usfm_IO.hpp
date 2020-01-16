@@ -25,7 +25,7 @@ namespace usfm {
 
 	class IO {
 	public:
-		virtual void read(const std::string& input, Scene& scene) = 0;
+		virtual void read(const std::string& input, Scene& scene) {};
 
 		std::istream& safeGetline(std::istream& is, std::string& t);
 		void writeCov2File(const std::string& filepath, Scene& scene, Statistic& statistic);
