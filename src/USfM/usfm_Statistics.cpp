@@ -9,6 +9,7 @@
 */
 
 #include "USfM/usfm_Statistics.hpp"
+#include <stdexcept>
 
 namespace usfm {
 
