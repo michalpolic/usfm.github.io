@@ -124,7 +124,9 @@ namespace usfm {
 		if (camModel == eRadial2Fisheye && imgModel == eAAC)
 			return std::make_shared<ProjectionRadialFisheye>(camera, image, X, obs);
 
-		throw std::runtime_error("The projection for selected camera and image model is not implemented.");
+		throw std::runtime_error(
+			"The projection for selected camera and image model is not implemented (camModel: "
+			+ std::to_string(int(camModel)) + ", imgModel: " + std::to_string(imgModel) + ").");
 	}
 
 }
