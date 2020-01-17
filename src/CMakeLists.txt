@@ -55,6 +55,13 @@ install(TARGETS usfm
     DESTINATION lib
     EXPORT usfm-targets
   )
+install(
+    DIRECTORY USfM
+    DESTINATION include
+    COMPONENT headers
+    FILES_MATCHING PATTERN "*.hpp"
+  )
+
 
 # ==============================================================================
 # Uncertainty command line application

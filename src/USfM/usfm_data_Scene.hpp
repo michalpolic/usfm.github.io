@@ -25,13 +25,12 @@
 #include "USfM/usfm_Algorithm_Options.hpp"
 #include "USfM/usfm_Projection.hpp"
 
-typedef Eigen::SparseMatrix<double, Eigen::ColMajor> SM;
-typedef Eigen::SparseMatrix<double, Eigen::RowMajor> SM_row;
-typedef Eigen::MatrixXd DM;
-typedef Eigen::Triplet<double> Tri;
-
-
 namespace usfm {
+
+	typedef Eigen::SparseMatrix<double, Eigen::ColMajor> SM;
+	typedef Eigen::SparseMatrix<double, Eigen::RowMajor> SM_row;
+	typedef Eigen::MatrixXd DM;
+	typedef Eigen::Triplet<double> Tri;
 
 	enum EAlgorithm {
 		eSvdQrIteration = 0,
