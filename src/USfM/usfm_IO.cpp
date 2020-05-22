@@ -13,15 +13,28 @@
 namespace usfm {
 
 	void IO::writeCov2File(const std::string& filepath, Scene& scene, Statistic& statistic) {
+
 		// cameras
 		std::ofstream camera_cov(filepath + std::string("/camera_covariance.txt"));
+		camera_cov << "#IDs of images - number of parameters\n" << "#IDs of cameras -number of parameters\n" << "#Covariance matrices\n\n";
+
+		for (const auto& img : scene._images) {
+			camera_cov << img.second._id << "-" << img.second.numParams() << " ";
+		}
+		camera_cov << "\n";
+
+		for (const auto& cam : scene._cameras) {
+			camera_cov << cam.second._id << "-" << cam.second.numParams() << " ";
+		}
+		camera_cov << "\n";
+
 		for (int i = 0; i < scene._iZ.cols(); ++i) {
-			for (int j = 0; j < scene._iZ.rows(); ++j)
+			for (int j = 0; j <scene._iZ.rows(); ++j)
 				camera_cov << scene._iZ.data()[i * scene._iZ.rows() + j] << " ";
 			camera_cov << "\n";
 		}
 		camera_cov.close();
-		
+
 		// points
 		std::ofstream pts_cov(filepath + std::string("/points_covariances.txt"));
 		for (int i = 0; i < scene._cov_pts.size(); ++i) {
@@ -35,8 +48,6 @@ namespace usfm {
 		pts_cov.close();
 
 
-		// options, times etc. 
-		// TODO ...
 	}
 
 }

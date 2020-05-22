@@ -27,7 +27,7 @@ namespace usfm {
 	
 	inline bool point2DComparator(Point2D first, Point2D second) { return ((first._xy[0] - second._xy[0] < 0.01) ? (first._xy[1] < second._xy[1]) : (first._xy[0] < second._xy[0])); }
 	
-	void SceneFiltering(Scene &scene) {
+	void SceneFilteringOld(Scene &scene) {
 
 		//creating point3D usage map <id, number_of_uses>
 		std::map<int, int> point3D_usage_global;
@@ -40,8 +40,8 @@ namespace usfm {
 			std::map<int, short> point3D_rarity;   //could use different type, because of unused value here, bud map has easily accessible "contains" function
 			for (int i = 0; i < image.second._point2D.size(); ++i) {
 				if (!(scene._points3D.count(image.second._point2D[i]._id_point3D))) {
-					//image.second._point2D[i]._id_point3D = -1;				//unnecessary action, I suppose
-					image.second._point2D.erase(image.second._point2D.begin() + i);
+					image.second._point2D[i]._id_point3D = -1;				//unnecessary action, I suppose
+					//image.second._point2D.erase(image.second._point2D.begin() + i);
 				}
 				if (!point3D_rarity.count(image.second._point2D[i]._id_point3D)) {
 					point3D_usage_global[image.second._point2D[i]._id_point3D] += 1;
@@ -81,6 +81,8 @@ namespace usfm {
 				scene._points3D.erase(p3d.first);
 			}
 		}
+		
+		scene._points3D.erase(-1);
 
 		//fourth and last filtering cycle - deleting of invalid observations, which invalidity is due to removed 3D points
 
@@ -94,11 +96,75 @@ namespace usfm {
 		}
 	}
 
+	void SceneFiltering(Scene &scene) {
+		//create point3D usage map <id, number_of_uses>
+		std::map<int, int> point3D_used;
+		for (auto& p3d : scene._points3D) {
+			point3D_used.emplace(p3d.first, 0);
+		}
+
+		//filter 2Dpoints without existing 3D point
+		for (auto& image : scene._images) {
+			std::vector<int> reconst_filter = std::vector<int>(image.second._point2D.size());
+			for (int i = 0; i < image.second._point2D.size(); ++i) {
+				if (image.second._point2D[i]._id_point3D == -1) {		//no 3D point assigned
+					reconst_filter[i] = 0;
+				}
+				else if (!(scene._points3D.count(image.second._point2D[i]._id_point3D))){	//3D point does not exist
+					reconst_filter[i] = 0;
+				} 
+				else {
+					reconst_filter[i]++;
+				}
+			}
+
+			for (int i = reconst_filter.size() - 1; i >= 0; --i) {	   //delete invalid 2D points
+				if (reconst_filter[i] != 1) {
+					image.second._point2D.erase(image.second._point2D.begin() + i);
+					reconst_filter[i]--;
+				}
+				else {
+					point3D_used[image.second._point2D[i]._id_point3D]++;	
+				}
+			}
+			
+		}
+
+		// remove 3D points with less than 2 correspondeces
+		for (auto& point : point3D_used) {
+			if (point.second < 2) {
+				scene._points3D.erase(point.second);
+			}
+		}
+
+		//	filter 2Dpoints which has lost 3D correspondences
+		for (auto& image : scene._images) {
+			std::vector<int> reconst_filter = std::vector<int>(image.second._point2D.size());
+			for (int i = 0; i < image.second._point2D.size(); ++i) {
+				if (!(scene._points3D.count(image.second._point2D[i]._id_point3D))) {
+					reconst_filter[i] = 0;
+				}
+				else {
+					reconst_filter[i] = 1;
+				}
+			}
+
+			for (int i = reconst_filter.size() - 1; i >= 0; --i) {
+				if (reconst_filter[i] != 1) {
+					image.second._point2D.erase(image.second._point2D.begin() + i);
+					reconst_filter[i]--;
+				}
+			}
+
+		}
+
+	}
+
 
 	void Algorithm::init(Scene& scene) const
 	{
-		//SceneFiltering(scene);
-
+		SceneFiltering(scene);
+		
 		// init multithread routines
 		unsigned int num_threads = std::thread::hardware_concurrency();
 		if (num_threads != 0) {
