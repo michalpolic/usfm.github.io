@@ -69,7 +69,7 @@ namespace usfm {
 			T r2 = x2 + y2;
 			T radial = k[0] * r2 + k[1] * r2 * r2;
 			x = x + x * radial + T(2) * tk[0] * xy + tk[1] * (r2 + T(2) * x2);
-			y = y + y * radial + T(2) * tk[0] * xy + tk[1] * (r2 + T(2) * y2);
+			y = y + y * radial + T(2) * tk[1] * xy + tk[0] * (r2 + T(2) * y2);
 
 			T predicted_x = f[0] * x + pp[0];
 			T predicted_y = f[1] * y + pp[1];
